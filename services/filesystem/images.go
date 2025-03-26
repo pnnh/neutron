@@ -1,12 +1,14 @@
 package filesystem
 
-import (
-	"path/filepath"
-	"strings"
-)
+func IsTextFile(extName string) bool {
+	switch extName {
+	case ".md", ".txt":
+		return true
+	}
+	return false
+}
 
-func IsImageFile(path string) bool {
-	extName := strings.ToLower(filepath.Ext(path))
+func IsImageFile(extName string) bool {
 	switch extName {
 	case ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp":
 		return true
