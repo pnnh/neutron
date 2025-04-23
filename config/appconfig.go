@@ -80,5 +80,9 @@ func Debug() bool {
 	if ok && mode == "DEBUG" {
 		return true
 	}
+	mode, ok = GetConfiguration("RUN_MODE")
+	if ok && mode == "development" {
+		return true
+	}
 	return false
 }
