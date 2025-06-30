@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	v2 "fleeting/neutron/config/v2"
 	"github.com/sirupsen/logrus"
-	v2 "portal/neutron/config/v2"
 )
 
 var staticConfigModel v2.ConfigMap
