@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"fleeting/neutron/config"
 	"github.com/golang-jwt/jwt/v5"
+	"neutron/config"
 )
 
 func GetIssure() string {

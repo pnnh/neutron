@@ -13,8 +13,8 @@ import (
 	"regexp"
 	"strings"
 
-	"fleeting/neutron/services/datastore"
 	"github.com/sirupsen/logrus"
+	"neutron/services/datastore"
 )
 
 type ModelField struct {
@@ -61,7 +61,7 @@ func main() {
 package %s
 
 import (
-	"fleeting/neutron/services/datastore"
+	"neutron/services/datastore"
 )
 `
 	packageAndImport = fmt.Sprintf(packageAndImport, f.Name.Name)

@@ -3,8 +3,8 @@ package email
 import (
 	"fmt"
 
-	"fleeting/neutron/config"
 	"golang.org/x/time/rate"
+	"neutron/config"
 
 	gomail "gopkg.in/gomail.v2"
 )
