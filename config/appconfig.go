@@ -2,10 +2,12 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	v2 "neutron/config/v2"
+
+	"github.com/sirupsen/logrus"
 )
 
 var staticConfigModel v2.ConfigMap
@@ -76,6 +78,10 @@ func GetConfigOrDefaultInt64(key interface{}, defaultValue int64) int64 {
 }
 
 func Debug() bool {
+	// check if environment variable is set
+	if os.Getenv("DEBUG") == "true" {
+		return true
+	}
 	var mode, ok = GetConfiguration("MODE")
 	if ok && mode == "DEBUG" {
 		return true
