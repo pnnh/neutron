@@ -12,14 +12,14 @@ import (
 
 var staticConfigModel v2.ConfigMap
 
-func InitAppConfig() error {
+func InitAppConfig(configFile string) error {
 	logrus.SetReportCaller(false)
 	logrus.SetFormatter(&logrus.TextFormatter{
 		ForceColors:     false,
 		TimestampFormat: time.RFC3339,
 	})
 
-	model, err := v2.ParseConfig("config.yaml")
+	model, err := v2.ParseConfig(configFile)
 	if err != nil {
 		return fmt.Errorf("配置文件解析失败: %w", err)
 	}
