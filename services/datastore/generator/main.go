@@ -117,7 +117,7 @@ import (
 
 	sourceText := sb.String()
 	fmt.Printf("sourceText======================\n%s\n======================\n", sourceText)
-	fmt.Fprintf(file, sourceText)
+	fmt.Fprintf(file, "%s", sourceText)
 	formatted, err := format.Source([]byte(sourceText))
 	if err != nil {
 		log.Fatalln("生成失败4", err)
@@ -125,7 +125,7 @@ import (
 	formattedSource := string(formatted)
 	file.Seek(0, 0)
 
-	fmt.Fprintf(file, formattedSource)
+	fmt.Fprintf(file, "%s", formattedSource)
 	//fmt.Printf("formattedSource======================\n%s\n======================\n", formattedSource)
 }
 
