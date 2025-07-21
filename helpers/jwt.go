@@ -9,18 +9,13 @@ import (
 	"neutron/config"
 )
 
-func GetIssure() string {
-	issure := config.MustGetConfigurationString("SELF_URL")
-	return issure
-}
-
-func GenerateJwtTokenRs256(username string, privKeyString string, tokenId string) (string, error) {
+func GenerateJwtTokenRs256(username string, privKeyString string, tokenId string, issuer string) (string, error) {
 	claims := jwt.MapClaims{
 		//"username": username,
 		"exp": time.Now().Add(time.Hour * 24 * 3).Unix(),
 		"iat": time.Now().Unix(),
 		//"sub": username,
-		"iss": GetIssure(),
+		"iss": issuer,
 		//"aud":      []string{"multiverse.cloud"},
 		"jti": tokenId,
 	}

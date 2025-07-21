@@ -10,9 +10,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type ConfigMap map[string]interface{}
+type FileConfigStore map[string]interface{}
 
-func (c ConfigMap) GetValue(key string) (any, error) {
+func (c FileConfigStore) GetValue(key string) (any, error) {
 	key = strings.TrimSpace(key)
 	if value, ok := c[key]; ok {
 		return value, nil
@@ -25,12 +25,12 @@ func (c ConfigMap) GetValue(key string) (any, error) {
 	child := c[subKey]
 	children, ok := child.(map[string]interface{})
 	if ok {
-		return ConfigMap(children).GetValue(key[index+1:])
+		return FileConfigStore(children).GetValue(key[index+1:])
 	}
 	return child, nil
 }
 
-func (c ConfigMap) GetString(key string) (string, error) {
+func (c FileConfigStore) GetString(key string) (string, error) {
 	value, err := c.GetValue(key)
 	if err != nil {
 		return "", err
@@ -41,7 +41,7 @@ func (c ConfigMap) GetString(key string) (string, error) {
 	return "", nil
 }
 
-func (c ConfigMap) GetBool(key string) (bool, error) {
+func (c FileConfigStore) GetBool(key string) (bool, error) {
 	value, err := c.GetValue(key)
 	if err != nil {
 		return false, err
@@ -52,15 +52,15 @@ func (c ConfigMap) GetBool(key string) (bool, error) {
 	return false, nil
 }
 
-func (c ConfigMap) MustGetString(key string) string {
+func (c FileConfigStore) MustGetString(key string) string {
 	value, err := c.GetString(key)
 	if err != nil {
-		logrus.Fatalf("配置项[%s]不存在", key)
+		logrus.Fatalf("配置项[%s]不存在3", key)
 	}
 	return value
 }
 
-func (c ConfigMap) GetInt64(key string) (int64, error) {
+func (c FileConfigStore) GetInt64(key string) (int64, error) {
 	value, err := c.GetValue(key)
 	if err != nil {
 		return 0, err
@@ -82,11 +82,11 @@ func (c ConfigMap) GetInt64(key string) (int64, error) {
 	return 0, fmt.Errorf("配置项[%s]不存在或格式有误", key)
 }
 
-func (c ConfigMap) setValue(key string, value any) {
+func (c FileConfigStore) setValue(key string, value any) {
 	c[key] = value
 }
 
-func ParseConfigContent(fileContent string) (ConfigMap, error) {
+func ParseConfigContent(fileContent string) (FileConfigStore, error) {
 	configMap := make(map[string]any)
 
 	err := yaml.Unmarshal([]byte(fileContent), &configMap)
@@ -105,7 +105,7 @@ func ParseConfigContent(fileContent string) (ConfigMap, error) {
 		}
 	}
 
-	var model ConfigMap = configMap
+	var model FileConfigStore = configMap
 
 	var filePrefix = "include://"
 	var contentPrefix = "content://"
@@ -130,8 +130,8 @@ func ParseConfigContent(fileContent string) (ConfigMap, error) {
 	return model, nil
 }
 
-func ParseConfig(filePath string) (ConfigMap, error) {
-	var model ConfigMap
+func ParseConfigFile(filePath string) (FileConfigStore, error) {
+	var model FileConfigStore
 
 	if _, err := os.Stat(filePath); err == nil {
 		configData, err := os.ReadFile(filePath)
