@@ -14,20 +14,17 @@ type FileConfigStore map[string]interface{}
 
 func (c FileConfigStore) GetValue(key string) (any, error) {
 	key = strings.TrimSpace(key)
-	if value, ok := c[key]; ok {
-		return value, nil
+
+	// when the key is in the format of scope.name, extract scope and name, local file ignores scope
+	nameList := strings.Split(key, ".")
+	var name string
+	if len(nameList) == 1 {
+		name = key
+	} else if len(nameList) == 2 {
+		name = nameList[1]
 	}
-	index := strings.Index(key, ".")
-	if index < 0 {
-		return nil, nil
-	}
-	subKey := key[:index]
-	child := c[subKey]
-	children, ok := child.(map[string]interface{})
-	if ok {
-		return FileConfigStore(children).GetValue(key[index+1:])
-	}
-	return child, nil
+
+	return c[name], nil
 }
 
 func (c FileConfigStore) GetString(key string) (string, error) {
@@ -80,10 +77,6 @@ func (c FileConfigStore) GetInt64(key string) (int64, error) {
 		return intValue, nil
 	}
 	return 0, fmt.Errorf("配置项[%s]不存在或格式有误", key)
-}
-
-func (c FileConfigStore) setValue(key string, value any) {
-	c[key] = value
 }
 
 func ParseConfigContent(fileContent string) (FileConfigStore, error) {
