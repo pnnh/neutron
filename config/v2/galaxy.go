@@ -70,6 +70,11 @@ func (c GalaxyConfigStore) GetValue(key string) (configValue any, getError error
 	getUrl := fmt.Sprintf("%s/config?project=%s&app=%s&env=%s&svc=%s&scope=%s&name=%s",
 		c.galaxyUrl, c.project, c.app, c.env, c.svc, scope, name)
 
+	cacheValue, found := c.cache.Get(getUrl)
+	if found {
+		return cacheValue, nil
+	}
+
 	newRequest, err := http.NewRequest("GET", getUrl, nil)
 	if err != nil {
 		return false, fmt.Errorf("http.NewRequest: %w", err)
@@ -101,6 +106,7 @@ func (c GalaxyConfigStore) GetValue(key string) (configValue any, getError error
 	if !ok {
 		return nil, fmt.Errorf("invalid response data type, expected GalaxyConfigData")
 	}
+	c.cache.Set(getUrl, configData.Value, cache.DefaultExpiration)
 
 	return configData.Value, nil
 }
