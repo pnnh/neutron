@@ -5,6 +5,7 @@ type Pagination struct {
 	Limit  int `json:"limit"`
 	Page   int `json:"page"`
 	Size   int `json:"size"`
+	Count  int `json:"count"`
 }
 
 func CalcPaginationByPage(page int, size int) *Pagination {
