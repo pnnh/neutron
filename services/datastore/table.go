@@ -38,6 +38,10 @@ func HasError(errs ...error) error {
 	return nil
 }
 
+type IConvertTableMap interface {
+	ToTableMap() (*TableMap, error)
+}
+
 type TableMap struct {
 	dataMap map[string]interface{}
 }
@@ -52,14 +56,47 @@ func ConvertToTableMap(dataMap map[string]interface{}) *TableMap {
 	}
 }
 
-func (m TableMap) MustGetInt(key string) int {
+func (m *TableMap) Set(key string, value interface{}) {
+	if m.dataMap == nil {
+		m.dataMap[key] = value
+	}
+}
+
+func (m *TableMap) Keys() []string {
+	keys := make([]string, 0, len(m.dataMap))
+	for k := range m.dataMap {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (m *TableMap) Values() []interface{} {
+	values := make([]interface{}, 0, len(m.dataMap))
+	for _, v := range m.dataMap {
+		values = append(values, v)
+	}
+	return values
+}
+
+func (m *TableMap) Get(key string) (interface{}, bool) {
+	if m.dataMap == nil {
+		return nil, false
+	}
+	if v, ok := m.dataMap[key]; ok {
+		return v, true
+
+	}
+	return nil, false
+}
+
+func (m *TableMap) MustGetInt(key string) int {
 	if v, ok := m.dataMap[key]; ok {
 		return v.(int)
 	}
 	panic(fmt.Sprintf("MustGetInt error, not found key: %s", key))
 }
 
-func (m TableMap) TryGetInt(key string) (int, error) {
+func (m *TableMap) TryGetInt(key string) (int, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
 		return 0, fmt.Errorf("TryGetInt error, not found key: %s", key)
@@ -71,7 +108,7 @@ func (m TableMap) TryGetInt(key string) (int, error) {
 	return intVal, nil
 }
 
-func (m TableMap) GetInt(key string) int {
+func (m *TableMap) GetInt(key string) int {
 	intVal, err := m.TryGetInt(key)
 	if err != nil {
 		panic(fmt.Sprintf("GetInt error, key: %s, error: %v", key, err))
@@ -79,7 +116,7 @@ func (m TableMap) GetInt(key string) int {
 	return intVal
 }
 
-func (m TableMap) TryGetString(key string) (string, error) {
+func (m *TableMap) TryGetString(key string) (string, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
 		return "", fmt.Errorf("TryGetInt error, not found key: %s", key)
@@ -91,7 +128,7 @@ func (m TableMap) TryGetString(key string) (string, error) {
 	return strVal, nil
 }
 
-func (m TableMap) GetString(key string) string {
+func (m *TableMap) GetString(key string) string {
 	strVal, err := m.TryGetString(key)
 	if err != nil {
 		panic(fmt.Sprintf("GetString error, key: %s, error: %v", key, err))
@@ -99,7 +136,7 @@ func (m TableMap) GetString(key string) string {
 	return strVal
 }
 
-func (m TableMap) GetNullString(key string) sql.NullString {
+func (m *TableMap) GetNullString(key string) sql.NullString {
 	strVal, err := m.TryGetString(key)
 	if err != nil {
 		if errors.Is(err, convert.ErrNilValue) {
@@ -110,7 +147,7 @@ func (m TableMap) GetNullString(key string) sql.NullString {
 	return sql.NullString{String: strVal, Valid: true}
 }
 
-func (m TableMap) TryGetTime(key string) (time.Time, error) {
+func (m *TableMap) TryGetTime(key string) (time.Time, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
 		return time.Time{}, fmt.Errorf("TryGetTime error, not found key: %s", key)
@@ -122,7 +159,7 @@ func (m TableMap) TryGetTime(key string) (time.Time, error) {
 	return timeVal, nil
 }
 
-func (m TableMap) GetTime(key string) time.Time {
+func (m *TableMap) GetTime(key string) time.Time {
 	timeVal, err := m.TryGetTime(key)
 	if err != nil {
 		panic(fmt.Sprintf("GetTime error, key: %s, error: %v", key, err))

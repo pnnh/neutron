@@ -1,8 +1,11 @@
 package datastore
 
 import (
+	"database/sql"
 	"fmt"
+	"github.com/iancoleman/strcase"
 	"neutron/services/strutil"
+	"reflect"
 	"strings"
 )
 
@@ -58,4 +61,54 @@ func NewGetQuery(tableName string, whereText, orderText, extraText string,
 	tableMap := ConvertToTableMap(firstMap)
 
 	return tableMap, nil
+}
+
+func ReflectColumns(s interface{}) (map[string]any, error) {
+	v := reflect.ValueOf(s)
+	t := reflect.TypeOf(s)
+
+	// 如果是指针，取其元素
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+		v = v.Elem()
+	}
+
+	if t.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("getStructFields kind is not struct")
+	}
+	columnMap := make(map[string]any)
+
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		fieldValue := v.Field(i)
+
+		//fmt.Printf("成员名: %s, 类型: %s, 类型名称: %s, 值: %v\n",
+		//	field.Name,
+		//	field.Type.Kind(),      // 基本类型，如 string、int、struct 等
+		//	field.Type.Name(),      // 类型名称，如 int、string、自定义类型名
+		//	fieldValue.Interface(), // 字段值
+		//)
+		colName := strcase.ToSnake(field.Name)
+		dbTag := field.Tag.Get("db")
+		if dbTag == "-" {
+			continue
+		} else if dbTag != "" {
+			colName = dbTag
+		}
+		insertTag := field.Tag.Get("insert")
+		if insertTag == "skip" {
+			continue
+		}
+		var colValue any
+		switch val := fieldValue.Interface().(type) {
+		case sql.NullString:
+			if val.Valid {
+				colValue = val.String
+			}
+		default:
+			colValue = val
+		}
+		columnMap[colName] = colValue
+	}
+	return columnMap, nil
 }
