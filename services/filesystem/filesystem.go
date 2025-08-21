@@ -8,7 +8,6 @@ import (
 )
 
 func ResolvePath(path string) (string, error) {
-
 	resolvedPath := path
 
 	if strings.HasPrefix(path, "file://") {
@@ -29,6 +28,13 @@ func ResolvePath(path string) (string, error) {
 			return path, fmt.Errorf("获取用户目录失败: %s", err)
 		}
 		resolvedPath = strings.Replace(resolvedPath, "~/", userHomeDir+"/", 1)
+	}
+	if strings.HasPrefix(resolvedPath, "home/") {
+		userHomeDir, err := os.UserHomeDir()
+		if err != nil {
+			return path, fmt.Errorf("获取用户目录失败: %s", err)
+		}
+		resolvedPath = strings.Replace(resolvedPath, "home/", userHomeDir+"/", 1)
 	}
 
 	return resolvedPath, nil

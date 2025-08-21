@@ -25,6 +25,7 @@ func MustUuid() string {
 }
 
 // StringToMD5UUID converts a string to a MD5 hash and then to a UUID
+// Dreprecated: Use `MustUuid` instead.
 func StringToMD5UUID(input string) (string, error) {
 	// Compute MD5 hash
 	hash := md5.Sum([]byte(input))
