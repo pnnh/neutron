@@ -50,7 +50,7 @@ func InitAppConfig(configUrl string, project, app, env, svc string) error {
 	} else {
 		logrus.SetLevel(logrus.InfoLevel)
 	}
-	logrus.Println("日志级别:", logrus.GetLevel())
+	//logrus.Println("Log level:", logrus.GetLevel())
 	return nil
 }
 
@@ -61,7 +61,7 @@ func configUrlToStore(configUrl string, project, app, env, svc string) (v2.IConf
 	} else if strings.HasPrefix(configUrl, "file:") {
 		fileStore, err := v2.ParseConfigFile(configUrl)
 		if err != nil {
-			return nil, fmt.Errorf("配置文件解析失败: %w", err)
+			return nil, fmt.Errorf("configUrlToStore ParseConfigFile: %w", err)
 		}
 		return fileStore, nil
 	} else {
@@ -89,7 +89,7 @@ func GetConfigurationString(key interface{}) (string, bool) {
 func MustGetConfigurationString(key interface{}) string {
 	value, ok := GetConfigurationString(key)
 	if !ok {
-		logrus.Fatalf("配置项[%s]不存在1", key)
+		logrus.Fatalf("MustGetConfigurationString GetConfigurationString not exists: %s", key)
 	}
 	return value
 }
@@ -111,22 +111,34 @@ func GetConfigOrDefaultInt64(key interface{}, defaultValue int64) int64 {
 	return value
 }
 
+// Debug returns true if the application is running in debug mode.
 func Debug() bool {
-	// check if environment variable is set
-	if os.Getenv("DEBUG") == "true" {
-		return true
+	modeValue := os.Getenv("GXMODE")
+	if modeValue != "" {
+		return modeValue == "DEBUG" || modeValue == "debug"
 	}
-	if os.Getenv("MODE") == "DEBUG" {
-		return true
-	}
-	//mode, ok = GetConfiguration("RUN_MODE")
-	//if ok && mode == "development" {
-	//	return true
-	//}
 	return false
 }
 
+// Testing returns true if the application is running in testing mode.
+func Testing() bool {
+	modeValue := os.Getenv("GXMODE")
+	if modeValue != "" {
+		return modeValue == "TEST" || modeValue == "test"
+	}
+	return false
+}
+
+// Release returns true if the application is running in release mode.
+func Release() bool {
+	return !Debug() && !Testing()
+}
+
 func GetEnvName() string {
+	envValue := os.Getenv("GXENV")
+	if envValue != "" {
+		return envValue
+	}
 	if Debug() {
 		return "development"
 	}
