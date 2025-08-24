@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func CalcFileHash(path string) (hash string, retErr error) {
+func CalcSha256(path string) (hash string, retErr error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return "", err

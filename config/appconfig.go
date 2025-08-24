@@ -20,15 +20,29 @@ func InitAppConfig(configUrl string, project, app, env, svc string) error {
 		TimestampFormat: time.RFC3339,
 	})
 
-	if strings.HasPrefix(configUrl, "galaxy://") {
-		galaxyUrl := strings.Replace(configUrl, "galaxy://", "http://", 1)
-		appConfigStore = v2.NewGalaxyConfigStore(galaxyUrl, project, app, env, svc)
-	} else {
-		fileStore, err := v2.ParseConfigFile(configUrl)
+	urlList := strings.Split(configUrl, ",")
+	if len(urlList) > 2 {
+		return fmt.Errorf("invalid config url: %s", configUrl)
+	}
+	if len(urlList) == 1 {
+		store, err := configUrlToStore(urlList[0], project, app, env, svc)
 		if err != nil {
-			return fmt.Errorf("配置文件解析失败: %w", err)
+			return err
 		}
-		appConfigStore = fileStore
+		appConfigStore = store
+
+	} else if len(urlList) == 2 {
+		originStore, err := configUrlToStore(urlList[0], project, app, env, svc)
+		if err != nil {
+			return err
+		}
+		overrideStore, err := configUrlToStore(urlList[1], project, app, env, svc)
+		if err != nil {
+			return err
+		}
+		appConfigStore = v2.NewOverrideConfigStore(originStore, overrideStore)
+	} else {
+		return fmt.Errorf("invalid config url: %s", configUrl)
 	}
 
 	if Debug() {
@@ -40,6 +54,20 @@ func InitAppConfig(configUrl string, project, app, env, svc string) error {
 	return nil
 }
 
+func configUrlToStore(configUrl string, project, app, env, svc string) (v2.IConfigStore, error) {
+	if strings.HasPrefix(configUrl, "galaxy://") {
+		galaxyUrl := strings.Replace(configUrl, "galaxy://", "http://", 1)
+		return v2.NewGalaxyConfigStore(galaxyUrl, project, app, env, svc), nil
+	} else if strings.HasPrefix(configUrl, "file:") {
+		fileStore, err := v2.ParseConfigFile(configUrl)
+		if err != nil {
+			return nil, fmt.Errorf("配置文件解析失败: %w", err)
+		}
+		return fileStore, nil
+	} else {
+		return nil, fmt.Errorf("unsupported config url: %s", configUrl)
+	}
+}
 func GetConfiguration(key interface{}) (interface{}, bool) {
 	if key, ok := key.(string); ok {
 		if value, err := appConfigStore.GetValue(key); err == nil {

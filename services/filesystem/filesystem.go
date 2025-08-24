@@ -4,37 +4,46 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"strings"
 )
 
 func ResolvePath(path string) (string, error) {
-	resolvedPath := path
+	resolvedPath := strings.ReplaceAll(path, "\\", "/")
 
-	if strings.HasPrefix(path, "file://") {
-		resolvedPath = strings.Replace(path, "file://", "", -1)
+	if strings.HasPrefix(resolvedPath, "file://") {
+		resolvedPath = strings.Replace(resolvedPath, "file://", "", -1)
 	}
 
-	if strings.HasPrefix(resolvedPath, "./") {
+	sysType := runtime.GOOS
+	if strings.HasPrefix(resolvedPath, "work/") {
 		dir, err := os.Getwd()
 		if err != nil {
-			return path, fmt.Errorf("获取当前目录失败: %s", err)
+			return path, fmt.Errorf("ResolvePath Getwd3: %s", err)
 		}
-		resolvedPath = strings.Replace(resolvedPath, "./", dir, 1)
-	}
-
-	if strings.HasPrefix(resolvedPath, "~/") {
+		resolvedPath = strings.Replace(resolvedPath, "work/", dir+"/", 1)
+	} else if strings.HasPrefix(resolvedPath, "home/") {
 		userHomeDir, err := os.UserHomeDir()
 		if err != nil {
-			return path, fmt.Errorf("获取用户目录失败: %s", err)
-		}
-		resolvedPath = strings.Replace(resolvedPath, "~/", userHomeDir+"/", 1)
-	}
-	if strings.HasPrefix(resolvedPath, "home/") {
-		userHomeDir, err := os.UserHomeDir()
-		if err != nil {
-			return path, fmt.Errorf("获取用户目录失败: %s", err)
+			return path, fmt.Errorf("ResolvePath UserHomeDir3: %s", err)
 		}
 		resolvedPath = strings.Replace(resolvedPath, "home/", userHomeDir+"/", 1)
+	} else if strings.HasPrefix(resolvedPath, "root/") {
+		if sysType == "windows" {
+			diskDrivers := []string{"C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+				"T", "U", "V", "W", "X", "Y", "Z"}
+			for _, diskDriver := range diskDrivers {
+				if strings.HasPrefix(resolvedPath, "root/"+diskDriver+"/") {
+					resolvedPath = strings.Replace(resolvedPath, "root/"+diskDriver, diskDriver+":", 1)
+					break
+				}
+			}
+		} else {
+			resolvedPath = strings.Replace(resolvedPath, "root/", "/", 1)
+		}
+	}
+	if sysType == "windows" {
+		resolvedPath = strings.ReplaceAll(resolvedPath, "/", "\\")
 	}
 
 	return resolvedPath, nil

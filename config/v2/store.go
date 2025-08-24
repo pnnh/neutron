@@ -1,5 +1,9 @@
 package config
 
+import "errors"
+
+var ErrConfigNotFound = errors.New("config not found")
+
 type IConfigStore interface {
 	GetValue(key string) (any, error)
 	GetString(key string) (string, error)

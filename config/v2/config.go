@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"neutron/services/filesystem"
 	"os"
 	"strconv"
 	"strings"
@@ -126,8 +127,13 @@ func ParseConfigContent(fileContent string) (FileConfigStore, error) {
 func ParseConfigFile(filePath string) (FileConfigStore, error) {
 	var model FileConfigStore
 
-	if _, err := os.Stat(filePath); err == nil {
-		configData, err := os.ReadFile(filePath)
+	fullPath, err := filesystem.ResolvePath(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("ParseConfigFile ResolvePath: %w", err)
+	}
+
+	if _, err := os.Stat(fullPath); err == nil {
+		configData, err := os.ReadFile(fullPath)
 		if err != nil {
 			return nil, fmt.Errorf("读取配置文件出错: %w", err)
 		}
