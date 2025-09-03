@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"neutron/services/convert"
 	"time"
+
+	"neutron/services/convert"
 )
 
 type IIntValue interface {
@@ -47,7 +48,9 @@ type TableMap struct {
 }
 
 func NewTableMap() *TableMap {
-	return new(TableMap)
+	return &TableMap{
+		dataMap: make(map[string]interface{}),
+	}
 }
 
 func ConvertToTableMap(dataMap map[string]interface{}) *TableMap {
@@ -57,7 +60,7 @@ func ConvertToTableMap(dataMap map[string]interface{}) *TableMap {
 }
 
 func (m *TableMap) Set(key string, value interface{}) {
-	if m.dataMap == nil {
+	if m.dataMap != nil {
 		m.dataMap[key] = value
 	}
 }
@@ -71,15 +74,24 @@ func (m *TableMap) Keys() []string {
 }
 
 func (m *TableMap) Values() []interface{} {
+	keys := m.Keys()
 	values := make([]interface{}, 0, len(m.dataMap))
-	for _, v := range m.dataMap {
-		values = append(values, v)
+	for _, k := range keys {
+		values = append(values, m.dataMap[k])
 	}
 	return values
 }
 
+func (m *TableMap) MapData() map[string]interface{} {
+	mapData := make(map[string]interface{})
+	for k, v := range m.dataMap {
+		mapData[k] = v
+	}
+	return mapData
+}
+
 func (m *TableMap) Get(key string) (interface{}, bool) {
-	if m.dataMap == nil {
+	if m.dataMap != nil {
 		return nil, false
 	}
 	if v, ok := m.dataMap[key]; ok {
