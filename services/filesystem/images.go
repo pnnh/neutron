@@ -6,23 +6,6 @@ import (
 	"strings"
 )
 
-func IsTextFile(extName string) bool {
-	switch extName {
-	case ".md", ".txt":
-		return true
-	}
-	return false
-}
-
-func IsImageFile(fileName string) bool {
-	extName := strings.Trim(strings.ToLower(filepath.Ext(fileName)), " ")
-	switch extName {
-	case ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp":
-		return true
-	}
-	return false
-}
-
 func LowerExtName(fileName string) string {
 	extName := strings.Trim(strings.ToLower(filepath.Ext(fileName)), " ")
 	if extName == "" {

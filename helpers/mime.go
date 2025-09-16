@@ -22,6 +22,12 @@ func GetMimeType(filePath string) string {
 		return "image/jpeg"
 	case ".gif":
 		return "image/gif"
+	case ".bmp":
+		return "image/bmp"
+	case ".tiff", ".tif":
+		return "image/tiff"
+	case ".ico":
+		return "image/vnd.microsoft.icon"
 	case ".svg":
 		return "image/svg+xml"
 	case ".txt", ".md", ".markdown":
@@ -105,4 +111,20 @@ func GetMimeType(filePath string) string {
 		return "text/plain"
 	}
 	return "application/octet-stream"
+}
+
+func IsTextFile(filePath string) bool {
+	mimeType := GetMimeType(filePath)
+	if strings.HasPrefix(mimeType, "text/") {
+		return true
+	}
+	return false
+}
+
+func IsImageFile(filePath string) bool {
+	mimeType := GetMimeType(filePath)
+	if strings.HasPrefix(mimeType, "image/") {
+		return true
+	}
+	return false
 }
