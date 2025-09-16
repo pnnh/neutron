@@ -6,15 +6,15 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
-	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	"neutron/services/datastore"
+
+	"github.com/sirupsen/logrus"
 )
 
 type ModelField struct {
@@ -42,7 +42,7 @@ func main() {
 	logrus.Println("goFile", fullPath)
 
 	if fullPath == "" {
-		log.Fatalln("请指定文件路径")
+		logrus.Fatalln("请指定文件路径")
 	}
 
 	data, err := os.ReadFile(fullPath)
@@ -84,14 +84,14 @@ import (
 				case *ast.TypeSpec:
 					typeSpec := spec.(*ast.TypeSpec)
 
-					fmt.Printf("Struct: name=%s\n", typeSpec.Name.Name)
+					logrus.Printf("Struct: name=%s\n", typeSpec.Name.Name)
 
 					switch typeSpec.Type.(type) {
 					case *ast.StructType:
-						fmt.Printf("Struct: doc=%s\n", genDecl.Doc.Text())
+						logrus.Printf("Struct: doc=%s\n", genDecl.Doc.Text())
 						text, err := ParseAstStructType(genDecl, typeSpec, typeSpec.Type.(*ast.StructType))
 						if err != nil {
-							log.Fatalln("生成失败", err)
+							logrus.Fatalln("生成失败", err)
 						}
 						sb.WriteString(text)
 					}
@@ -106,7 +106,7 @@ import (
 	os.Remove(genFilePath)
 	file, err := os.Create(genFilePath)
 	if err != nil {
-		log.Fatalln("生成失败2", err)
+		logrus.Fatalln("生成失败2", err)
 	}
 	defer file.Close()
 
@@ -116,17 +116,17 @@ import (
 	//}
 
 	sourceText := sb.String()
-	fmt.Printf("sourceText======================\n%s\n======================\n", sourceText)
+	logrus.Printf("sourceText======================\n%s\n======================\n", sourceText)
 	fmt.Fprintf(file, "%s", sourceText)
 	formatted, err := format.Source([]byte(sourceText))
 	if err != nil {
-		log.Fatalln("生成失败4", err)
+		logrus.Fatalln("生成失败4", err)
 	}
 	formattedSource := string(formatted)
 	file.Seek(0, 0)
 
 	fmt.Fprintf(file, "%s", formattedSource)
-	//fmt.Printf("formattedSource======================\n%s\n======================\n", formattedSource)
+	//logrus.Printf("formattedSource======================\n%s\n======================\n", formattedSource)
 }
 
 func findTableName(src string) string {
@@ -134,7 +134,7 @@ func findTableName(src string) string {
 	matchArr := compileRegex.FindStringSubmatch(src)
 
 	if len(matchArr) > 0 {
-		fmt.Println("提取字符串内容：", matchArr[len(matchArr)-1])
+		logrus.Println("提取字符串内容：", matchArr[len(matchArr)-1])
 	}
 
 	if len(matchArr) > 0 {
@@ -177,7 +177,7 @@ func ParseAstStructType(genDecl *ast.GenDecl, typeSpec *ast.TypeSpec, structType
 
 		for _, name := range field.Names {
 			dbTag := reflect.StructTag(field.Tag.Value).Get("db")
-			//fmt.Printf("\tField: name=%s type=%s tag=%s\n", name.Name, fieldType, tagValue)
+			//logrus.Printf("\tField: name=%s type=%s tag=%s\n", name.Name, fieldType, tagValue)
 			if dbTag == "" {
 				dbTag = strings.ToLower(name.Name)
 			}

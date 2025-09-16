@@ -1,8 +1,6 @@
 package helpers
 
 import (
-	"crypto/md5"
-
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -26,18 +24,19 @@ func MustUuid() string {
 
 // StringToMD5UUID converts a string to a MD5 hash and then to a UUID
 // Dreprecated: Use `MustUuid` instead.
-func StringToMD5UUID(input string) (string, error) {
-	// Compute MD5 hash
-	hash := md5.Sum([]byte(input))
-
-	// Convert hash to UUID
-	uuid, err := uuid.FromBytes(hash[:])
-	if err != nil {
-		return "", err
-	}
-
-	return uuid.String(), nil
-}
+// 把md5换成uuid格式，有可能会产生非法的uuid，所以该函数弃用
+//func StringToMD5UUID(input string) (string, error) {
+//	// Compute MD5 hash
+//	hash := md5.Sum([]byte(input))
+//
+//	// Convert hash to UUID
+//	uuid, err := uuid.FromBytes(hash[:])
+//	if err != nil {
+//		return "", err
+//	}
+//
+//	return uuid.String(), nil
+//}
 
 func IsUuid(stringValue string) bool {
 	_, err := uuid.Parse(stringValue)

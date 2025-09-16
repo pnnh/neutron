@@ -82,7 +82,7 @@ func ReflectColumns(s interface{}) (map[string]any, error) {
 		field := t.Field(i)
 		fieldValue := v.Field(i)
 
-		//fmt.Printf("成员名: %s, 类型: %s, 类型名称: %s, 值: %v\n",
+		//logrus.Printf("成员名: %s, 类型: %s, 类型名称: %s, 值: %v\n",
 		//	field.Name,
 		//	field.Type.Kind(),      // 基本类型，如 string、int、struct 等
 		//	field.Type.Name(),      // 类型名称，如 int、string、自定义类型名

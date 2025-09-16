@@ -8,7 +8,8 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
-	"fmt"
+
+	"github.com/sirupsen/logrus"
 )
 
 // RSA公钥私钥产生
@@ -48,13 +49,13 @@ func RsaSignWithSha256(data []byte, keyBytes []byte) []byte {
 	}
 	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
-		fmt.Println("ParsePKCS8PrivateKey err", err)
+		logrus.Println("ParsePKCS8PrivateKey err", err)
 		panic(err)
 	}
 
 	signature, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hashed)
 	if err != nil {
-		fmt.Printf("Error from signing: %s\n", err)
+		logrus.Printf("Error from signing: %s\n", err)
 		panic(err)
 	}
 

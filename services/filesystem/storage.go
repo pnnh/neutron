@@ -35,6 +35,5 @@ func (p *FilePorter) CopyFile(srcPath, targetPath string) (string, error) {
 		return "", fmt.Errorf("CopyFile: %w", err)
 	}
 
-	return fullTargetDir, nil
-
+	return fullTargetPath, nil
 }
