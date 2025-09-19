@@ -118,6 +118,10 @@ func IsTextFile(filePath string) bool {
 	if strings.HasPrefix(mimeType, "text/") {
 		return true
 	}
+	switch mimeType {
+	case "application/json", "application/xml", "application/javascript":
+		return true
+	}
 	return false
 }
 
