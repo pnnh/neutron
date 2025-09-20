@@ -24,12 +24,14 @@ func NewFilePorter(targetPath string) (*FilePorter, error) {
 
 func (p *FilePorter) CopyFile(srcPath, targetPath string) (string, error) {
 	targetDir := filepath.Dir(targetPath)
-	fullTargetDir := p.targetRootPath + "/" + targetDir
-	err := os.MkdirAll(fullTargetDir, os.ModePerm)
+	fullTargetDir := filepath.Join(p.targetRootPath, string(os.PathSeparator), targetDir)
+	err := os.MkdirAll(fullTargetDir, os.ModeDir)
+	//path := `E:\Temp\5e31a3427bba91844defbe545ca0c0fa3109379a\main`
+	//err := os.MkdirAll(path, os.ModeDir)
 	if err != nil {
 		return "", fmt.Errorf("MkdirAll: %w", err)
 	}
-	fullTargetPath := p.targetRootPath + "/" + targetPath
+	fullTargetPath := filepath.Join(p.targetRootPath, string(os.PathSeparator), targetPath)
 	err = CopyFile(srcPath, fullTargetPath)
 	if err != nil {
 		return "", fmt.Errorf("CopyFile: %w", err)
