@@ -39,33 +39,33 @@ func HasError(errs ...error) error {
 	return nil
 }
 
-type IConvertTableMap interface {
-	ToTableMap() (*TableMap, error)
+type IConvertDataRow interface {
+	ToTableMap() (*DataRow, error)
 }
 
-type TableMap struct {
+type DataRow struct {
 	dataMap map[string]interface{}
 }
 
-func NewTableMap() *TableMap {
-	return &TableMap{
+func NewDataRow() *DataRow {
+	return &DataRow{
 		dataMap: make(map[string]interface{}),
 	}
 }
 
-func ConvertToTableMap(dataMap map[string]interface{}) *TableMap {
-	return &TableMap{
+func MapToDataRow(dataMap map[string]interface{}) *DataRow {
+	return &DataRow{
 		dataMap: dataMap,
 	}
 }
 
-func (m *TableMap) Set(key string, value interface{}) {
+func (m *DataRow) Set(key string, value interface{}) {
 	if m.dataMap != nil {
 		m.dataMap[key] = value
 	}
 }
 
-func (m *TableMap) Keys() []string {
+func (m *DataRow) Keys() []string {
 	keys := make([]string, 0, len(m.dataMap))
 	for k := range m.dataMap {
 		keys = append(keys, k)
@@ -73,7 +73,7 @@ func (m *TableMap) Keys() []string {
 	return keys
 }
 
-func (m *TableMap) Values() []interface{} {
+func (m *DataRow) Values() []interface{} {
 	keys := m.Keys()
 	values := make([]interface{}, 0, len(m.dataMap))
 	for _, k := range keys {
@@ -82,7 +82,7 @@ func (m *TableMap) Values() []interface{} {
 	return values
 }
 
-func (m *TableMap) MapData() map[string]interface{} {
+func (m *DataRow) MapData() map[string]interface{} {
 	mapData := make(map[string]interface{})
 	for k, v := range m.dataMap {
 		mapData[k] = v
@@ -90,7 +90,7 @@ func (m *TableMap) MapData() map[string]interface{} {
 	return mapData
 }
 
-func (m *TableMap) Get(key string) (interface{}, bool) {
+func (m *DataRow) Get(key string) (interface{}, bool) {
 	if m.dataMap != nil {
 		return nil, false
 	}
@@ -101,14 +101,14 @@ func (m *TableMap) Get(key string) (interface{}, bool) {
 	return nil, false
 }
 
-func (m *TableMap) MustGetInt(key string) int {
+func (m *DataRow) MustGetInt(key string) int {
 	if v, ok := m.dataMap[key]; ok {
 		return v.(int)
 	}
 	panic(fmt.Sprintf("MustGetInt error, not found key: %s", key))
 }
 
-func (m *TableMap) TryGetInt(key string) (int, error) {
+func (m *DataRow) TryGetInt(key string) (int, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
 		return 0, fmt.Errorf("TryGetInt error, not found key: %s", key)
@@ -120,7 +120,7 @@ func (m *TableMap) TryGetInt(key string) (int, error) {
 	return intVal, nil
 }
 
-func (m *TableMap) GetInt(key string) int {
+func (m *DataRow) GetInt(key string) int {
 	intVal, err := m.TryGetInt(key)
 	if err != nil {
 		panic(fmt.Sprintf("GetInt error, key: %s, error: %v", key, err))
@@ -128,7 +128,7 @@ func (m *TableMap) GetInt(key string) int {
 	return intVal
 }
 
-func (m *TableMap) TryGetString(key string) (string, error) {
+func (m *DataRow) TryGetString(key string) (string, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
 		return "", fmt.Errorf("TryGetInt error, not found key: %s", key)
@@ -140,7 +140,7 @@ func (m *TableMap) TryGetString(key string) (string, error) {
 	return strVal, nil
 }
 
-func (m *TableMap) GetString(key string) string {
+func (m *DataRow) GetString(key string) string {
 	strVal, err := m.TryGetString(key)
 	if err != nil {
 		panic(fmt.Sprintf("GetString error, key: %s, error: %v", key, err))
@@ -148,7 +148,7 @@ func (m *TableMap) GetString(key string) string {
 	return strVal
 }
 
-func (m *TableMap) GetNullString(key string) sql.NullString {
+func (m *DataRow) GetNullString(key string) sql.NullString {
 	strVal, err := m.TryGetString(key)
 	if err != nil {
 		if errors.Is(err, convert.ErrNilValue) {
@@ -159,7 +159,7 @@ func (m *TableMap) GetNullString(key string) sql.NullString {
 	return sql.NullString{String: strVal, Valid: true}
 }
 
-func (m *TableMap) TryGetTime(key string) (time.Time, error) {
+func (m *DataRow) TryGetTime(key string) (time.Time, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
 		return time.Time{}, fmt.Errorf("TryGetTime error, not found key: %s", key)
@@ -171,7 +171,7 @@ func (m *TableMap) TryGetTime(key string) (time.Time, error) {
 	return timeVal, nil
 }
 
-func (m *TableMap) GetTime(key string) time.Time {
+func (m *DataRow) GetTime(key string) time.Time {
 	timeVal, err := m.TryGetTime(key)
 	if err != nil {
 		panic(fmt.Sprintf("GetTime error, key: %s, error: %v", key, err))

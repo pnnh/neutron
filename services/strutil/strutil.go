@@ -7,6 +7,9 @@ import (
 
 // IsValidName checks if the given string is a valid name.
 func IsValidName(s string) bool {
+	if (s == "") || len(s) > 128 {
+		return false
+	}
 	re := regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
 	return re.MatchString(s)
 }

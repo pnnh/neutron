@@ -14,7 +14,7 @@ func IsValidTableName(tableName string) bool {
 }
 
 func NewGetQuery(tableName string, whereText, orderText, extraText string,
-	sqlParams map[string]any) (tabMap *TableMap, getErr error) {
+	sqlParams map[string]any) (tabMap *DataRow, getErr error) {
 	if !IsValidTableName(tableName) {
 		return nil, fmt.Errorf("invalid table name: %s", tableName)
 	}
@@ -58,7 +58,7 @@ func NewGetQuery(tableName string, whereText, orderText, extraText string,
 	if firstMap == nil {
 		return nil, nil
 	}
-	tableMap := ConvertToTableMap(firstMap)
+	tableMap := MapToDataRow(firstMap)
 
 	return tableMap, nil
 }
