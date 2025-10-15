@@ -148,6 +148,17 @@ func (m *DataRow) GetString(key string) string {
 	return strVal
 }
 
+func (m *DataRow) GetStringOrDefault(key string, defaultValue string) string {
+	strVal, err := m.TryGetString(key)
+	if err != nil {
+		if errors.Is(err, convert.ErrNilValue) {
+			return defaultValue
+		}
+		panic(fmt.Sprintf("GetString error, key: %s, error: %v", key, err))
+	}
+	return strVal
+}
+
 func (m *DataRow) GetNullString(key string) sql.NullString {
 	strVal, err := m.TryGetString(key)
 	if err != nil {
@@ -174,6 +185,17 @@ func (m *DataRow) TryGetTime(key string) (time.Time, error) {
 func (m *DataRow) GetTime(key string) time.Time {
 	timeVal, err := m.TryGetTime(key)
 	if err != nil {
+		panic(fmt.Sprintf("GetTime error, key: %s, error: %v", key, err))
+	}
+	return timeVal
+}
+
+func (m *DataRow) GetTimeOrDefault(key string, defaultValue time.Time) time.Time {
+	timeVal, err := m.TryGetTime(key)
+	if err != nil {
+		if errors.Is(err, convert.ErrNilValue) {
+			return defaultValue
+		}
 		panic(fmt.Sprintf("GetTime error, key: %s, error: %v", key, err))
 	}
 	return timeVal

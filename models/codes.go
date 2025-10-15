@@ -36,10 +36,9 @@ func (c NECode) WithLocalData(lang string, data interface{}) *NECommonResult {
 	return NENewCommonResult(c, NECodeMessage(lang, c), data)
 }
 
-// Deprecated: Use WithLocalError instead
 func (c NECode) WithError(err error) *NECommonResult {
 	logrus.Errorf("NECode.WithError [%d] %v", c, err)
-	return NENewCommonResult(c, NECodeMessage(LangZh, c), nil)
+	return NENewCommonResult(c, NECodeMessage(LangEn, c), nil)
 }
 
 func (c NECode) WithLocalError(lang string, err error, zhMsg, enMsg string) *NECommonResult {
