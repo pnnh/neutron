@@ -1,6 +1,10 @@
 package convert
 
-import "fmt"
+import (
+	"fmt"
+
+	"neutron/models"
+)
 
 // ConvertString Deprecated: use ToString instead
 func ConvertString(value any) (string, error) {
@@ -9,7 +13,7 @@ func ConvertString(value any) (string, error) {
 
 func ToString(value any) (string, error) {
 	if value == nil {
-		return "", ErrNilValue
+		return "", models.ErrNilValue
 	}
 
 	switch v := value.(type) {

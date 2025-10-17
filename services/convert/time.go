@@ -3,12 +3,14 @@ package convert
 import (
 	"fmt"
 	"time"
+
+	"neutron/models"
 )
 
 func ConvertTime(value any) (time.Time, error) {
 
 	if value == nil {
-		return time.Time{}, ErrNilValue
+		return time.Time{}, models.ErrNilValue
 	}
 
 	switch v := value.(type) {

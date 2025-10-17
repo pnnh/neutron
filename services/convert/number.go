@@ -1,10 +1,14 @@
 package convert
 
-import "fmt"
+import (
+	"fmt"
+
+	"neutron/models"
+)
 
 func ConvertInt(value any) (int, error) {
 	if value == nil {
-		return 0, ErrNilValue
+		return 0, models.ErrNilValue
 	}
 	switch v := value.(type) {
 	case int:
@@ -68,7 +72,7 @@ func ConvertInt(value any) (int, error) {
 
 func ToInt64(value any) (int64, error) {
 	if value == nil {
-		return 0, ErrNilValue
+		return 0, models.ErrNilValue
 	}
 	switch v := value.(type) {
 	case int:
