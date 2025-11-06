@@ -50,7 +50,6 @@ func InitAppConfig(configUrl string, project, app, env, svc string) error {
 	} else {
 		logrus.SetLevel(logrus.InfoLevel)
 	}
-	//logrus.Println("Log level:", logrus.GetLevel())
 	return nil
 }
 
@@ -58,6 +57,13 @@ func configUrlToStore(configUrl string, project, app, env, svc string) (v2.IConf
 	if strings.HasPrefix(configUrl, "galaxy://") {
 		galaxyUrl := strings.Replace(configUrl, "galaxy://", "http://", 1)
 		return v2.NewGalaxyConfigStore(galaxyUrl, project, app, env, svc), nil
+	} else if strings.HasPrefix(configUrl, "pggo://") {
+		pgUrl := strings.Replace(configUrl, "pggo://", "", 1)
+		pgStore, err := v2.NewPgConfigStore(pgUrl, project, app, env, svc)
+		if err != nil {
+			return nil, fmt.Errorf("configUrlToStore NewPgConfigStore: %w", err)
+		}
+		return pgStore, nil
 	} else if strings.HasPrefix(configUrl, "file:") {
 		fileStore, err := v2.ParseConfigFile(configUrl)
 		if err != nil {

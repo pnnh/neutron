@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"neutron/config"
 )
 
 func GenerateJwtTokenRs256(username string, privKeyString string, tokenId string, issuer string) (string, error) {
@@ -97,14 +96,6 @@ func ParseJwtTokenRs256(tokenString string, pubKeyString string) (*jwt.Registere
 	return parsedClaims, nil
 }
 
-func GetJwk() (string, error) {
-	jwkString, ok := config.GetConfigurationString("OAUTH2_JWK")
-	if !ok {
-		return "", fmt.Errorf("OAUTH2_JWK is not set")
-	}
-	return jwkString, nil
-}
-
 type JwkModel struct {
 	Kty string `json:"kty"`
 	Kid string `json:"kid"`
@@ -113,13 +104,9 @@ type JwkModel struct {
 	E   string `json:"e"`
 }
 
-func GetJwkModel() (*JwkModel, error) {
-	jwkString, err := GetJwk()
-	if err != nil {
-		return nil, err
-	}
+func GetJwkModel(jwkString string) (*JwkModel, error) {
 	jwk := &JwkModel{}
-	err = json.Unmarshal([]byte(jwkString), jwk)
+	err := json.Unmarshal([]byte(jwkString), jwk)
 	if err != nil {
 		return nil, err
 	}
