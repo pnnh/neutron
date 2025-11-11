@@ -183,7 +183,7 @@ func (m *DataRow) SetIntDefaultChainFrom(key string, getter IntGetter, defaultVa
 func (m *DataRow) TryGetString(key string) (string, error) {
 	v, ok := m.dataMap[key]
 	if !ok {
-		return "", fmt.Errorf("TryGetInt error, not found key: %s", key)
+		return "", fmt.Errorf("TryGetInt error, %w key: %s", models.ErrNotFound, key)
 	}
 	strVal, err := convert.ConvertString(v)
 	if err != nil {
@@ -203,7 +203,7 @@ func (m *DataRow) GetString(key string) string {
 func (m *DataRow) GetStringOrDefault(key string, defaultValue string) string {
 	strVal, err := m.TryGetString(key)
 	if err != nil {
-		if errors.Is(err, models.ErrNilValue) {
+		if errors.Is(err, models.ErrNilValue) || errors.Is(err, models.ErrNotFound) {
 			return defaultValue
 		}
 		panic(fmt.Sprintf("GetString error, key: %s, error: %v", key, err))
