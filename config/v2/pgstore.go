@@ -61,9 +61,8 @@ func (c *PgConfigStore) GetValue(key string) (configValue any, getError error) {
 		return nil, fmt.Errorf("配置项[%s]格式不正确", key)
 	}
 	baseSqlText := ` select c.content 
-from configuration c 
-    join environments e on c.environment = e.uid `
-	whereText := ` where e.name = :environment and c.name = :name `
+from configuration c `
+	whereText := ` where c.name = :name `
 
 	if !strutil.IsValidName(c.svc) || !strutil.IsValidName(c.env) || !strutil.IsValidName(name) ||
 		!strutil.IsValidName(c.project) || !strutil.IsValidName(c.app) || !strutil.IsValidName(scope) {
@@ -76,23 +75,23 @@ from configuration c
 		"environment": c.env,
 		"name":        name,
 	}
-	if scope == "project" || scope == "app" || scope == "svc" {
-		baseSqlText += ` join projects p on c.project = p.uid `
-		whereText += ` and p.name = :project `
-		sqlParams["project"] = c.project
-		if scope == "app" || scope == "svc" {
-			baseSqlText += ` join applications a on c.application = a.uid `
-			whereText += ` and a.name = :application `
-			sqlParams["application"] = c.app
-			if scope == "svc" {
-				baseSqlText += ` join services s on c.service = s.uid `
-				whereText += ` and s.name = :service `
-				sqlParams["service"] = c.svc
-			}
-		}
-	} else {
-		return "", fmt.Errorf("invalid scope")
-	}
+	//if scope == "project" || scope == "app" || scope == "svc" {
+	//baseSqlText += ` join projects p on c.project = p.uid `
+	//whereText += ` and p.name = :project `
+	//sqlParams["project"] = c.project
+	//if scope == "app" || scope == "svc" {
+	//baseSqlText += ` join applications a on c.application = a.uid `
+	//whereText += ` and a.name = :application `
+	//sqlParams["application"] = c.app
+	//if scope == "svc" {
+	//	baseSqlText += ` join services s on c.service = s.uid `
+	//	whereText += ` and s.name = :service `
+	//	sqlParams["service"] = c.svc
+	//}
+	//}
+	//} else {
+	//	return "", fmt.Errorf("invalid scope")
+	//}
 	fullSqlText := fmt.Sprintf("%s%s%s", baseSqlText, whereText, " limit 1;")
 
 	sqlResults := map[string]interface{}{}
