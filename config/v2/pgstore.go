@@ -72,26 +72,8 @@ from galaxy.configuration c `
 		return "", fmt.Errorf("invalid project 2")
 	}
 	sqlParams := map[string]interface{}{
-		"environment": c.env,
-		"name":        name,
+		"name": name,
 	}
-	//if scope == "project" || scope == "app" || scope == "svc" {
-	//baseSqlText += ` join projects p on c.project = p.uid `
-	//whereText += ` and p.name = :project `
-	//sqlParams["project"] = c.project
-	//if scope == "app" || scope == "svc" {
-	//baseSqlText += ` join applications a on c.application = a.uid `
-	//whereText += ` and a.name = :application `
-	//sqlParams["application"] = c.app
-	//if scope == "svc" {
-	//	baseSqlText += ` join services s on c.service = s.uid `
-	//	whereText += ` and s.name = :service `
-	//	sqlParams["service"] = c.svc
-	//}
-	//}
-	//} else {
-	//	return "", fmt.Errorf("invalid scope")
-	//}
 	fullSqlText := fmt.Sprintf("%s%s%s", baseSqlText, whereText, " limit 1;")
 
 	sqlResults := map[string]interface{}{}

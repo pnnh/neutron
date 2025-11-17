@@ -78,6 +78,8 @@ func GetConfiguration(key interface{}) (interface{}, bool) {
 	if key, ok := key.(string); ok {
 		if value, err := appConfigStore.GetValue(key); err == nil {
 			return value, true
+		} else {
+			logrus.Errorf("GetConfiguration key=%s error: %v", key, err)
 		}
 	}
 	return nil, false
