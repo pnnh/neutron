@@ -61,7 +61,7 @@ func (c *PgConfigStore) GetValue(key string) (configValue any, getError error) {
 		return nil, fmt.Errorf("配置项[%s]格式不正确", key)
 	}
 	baseSqlText := ` select c.content 
-from configuration c `
+from galaxy.configuration c `
 	whereText := ` where c.name = :name `
 
 	if !strutil.IsValidName(c.svc) || !strutil.IsValidName(c.env) || !strutil.IsValidName(name) ||
