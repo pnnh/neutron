@@ -257,6 +257,11 @@ func (m *DataRow) SetNullStringChain(key string, value string) *DataRow {
 	return m
 }
 
+func (m *DataRow) SetStringChain(key string, value string) *DataRow {
+	m.SetString(key, value)
+	return m
+}
+
 func (m *DataRow) SetNullStringChainFrom(key string, getter StringGetter) *DataRow {
 	value, err := getter.TryGetString(key)
 	if m.Err != nil {
