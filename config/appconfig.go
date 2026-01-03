@@ -71,9 +71,38 @@ func configUrlToStore(configUrl string, project, app, env, svc string) (v2.IConf
 		}
 		return fileStore, nil
 	} else {
-		return nil, fmt.Errorf("unsupported config url: %s", configUrl)
+		return &UnsupportConfigStore{}, nil
 	}
 }
+
+type UnsupportConfigStore struct {
+}
+
+func (u UnsupportConfigStore) GetValue(key string) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (u UnsupportConfigStore) GetString(key string) (string, error) {
+	//TODO implement me
+	panic("implement me2")
+}
+
+func (u UnsupportConfigStore) GetBool(key string) (bool, error) {
+	//TODO implement me
+	panic("implement me3")
+}
+
+func (u UnsupportConfigStore) MustGetString(key string) string {
+	//TODO implement me
+	panic("implement me4")
+}
+
+func (u UnsupportConfigStore) GetInt64(key string) (int64, error) {
+	//TODO implement me
+	panic("implement me5")
+}
+
 func GetConfiguration(key interface{}) (interface{}, bool) {
 	if key, ok := key.(string); ok {
 		if value, err := appConfigStore.GetValue(key); err == nil {
