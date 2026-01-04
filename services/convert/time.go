@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"neutron/models"
+	"github.com/pnnh/neutron/models"
 )
 
 func ConvertTime(value any) (time.Time, error) {

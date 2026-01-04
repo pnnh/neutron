@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"neutron/helpers"
-	"neutron/models"
-	"neutron/services/convert"
-	"neutron/services/datetime"
+	"github.com/pnnh/neutron/helpers"
+	"github.com/pnnh/neutron/models"
+	"github.com/pnnh/neutron/services/convert"
+	"github.com/pnnh/neutron/services/datetime"
 
 	"github.com/sirupsen/logrus"
 )

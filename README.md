@@ -8,3 +8,8 @@ go get -u ./...
 # 整理packages
 go mod tidy
 ```
+## 运行测试
+
+```bash
+go test -v ./...
+```

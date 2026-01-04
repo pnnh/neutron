@@ -3,7 +3,7 @@ package convert
 import (
 	"fmt"
 
-	"neutron/models"
+	"github.com/pnnh/neutron/models"
 )
 
 // ConvertString Deprecated: use ToString instead

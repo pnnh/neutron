@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"neutron/services/convert"
+	"github.com/pnnh/neutron/services/convert"
 
 	"github.com/sirupsen/logrus"
 )

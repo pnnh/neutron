@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	v2 "neutron/config/v2"
+	v2 "github.com/pnnh/neutron/config/v2"
 
 	"github.com/sirupsen/logrus"
 )

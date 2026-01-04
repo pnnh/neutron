@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/patrickmn/go-cache"
+	"github.com/pnnh/neutron/models"
+	"github.com/pnnh/neutron/services/strutil"
 	"github.com/sirupsen/logrus"
-	"neutron/models"
-	"neutron/services/strutil"
 )
 
 type GalaxyConfigStore struct {

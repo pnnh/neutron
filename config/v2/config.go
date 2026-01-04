@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"neutron/services/filesystem"
+	"github.com/pnnh/neutron/services/filesystem"
 	"os"
 	"strconv"
 	"strings"

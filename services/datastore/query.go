@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/iancoleman/strcase"
-	"neutron/services/strutil"
+	"github.com/pnnh/neutron/services/strutil"
 	"reflect"
 	"strings"
 )

@@ -12,7 +12,7 @@ import (
 	"regexp"
 	"strings"
 
-	"neutron/services/datastore"
+	"github.com/pnnh/neutron/services/datastore"
 
 	"github.com/sirupsen/logrus"
 )
@@ -61,7 +61,7 @@ func main() {
 package %s
 
 import (
-	"neutron/services/datastore"
+	"github.com/pnnh/neutron/services/datastore"
 )
 `
 	packageAndImport = fmt.Sprintf(packageAndImport, f.Name.Name)

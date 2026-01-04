@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"neutron/services/datastore"
-	"neutron/services/strutil"
+	"github.com/pnnh/neutron/services/datastore"
+	"github.com/pnnh/neutron/services/strutil"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/patrickmn/go-cache"
