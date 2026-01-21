@@ -132,6 +132,54 @@ func (m *JsonMap) GetInt(key string) int {
 	return intVal
 }
 
+func (m *JsonMap) GetBoolean(key string) (bool, error) {
+	v, ok := m.dataMap[key]
+	if !ok {
+		return false, models.ErrNilValue
+	}
+	boolVal, err := convert.ConvertBool(v)
+	if err != nil {
+		return false, fmt.Errorf("GetBoolean error, key: %s, value: %v, error: %w", key, v, err)
+	}
+	return boolVal, nil
+}
+
+func (m *JsonMap) MustGetBoolean(key string) bool {
+	boolVal, err := m.GetBoolean(key)
+	if err != nil {
+		panic(fmt.Sprintf("MustGetBoolean error, key: %s, error: %v", key, err))
+	}
+	return boolVal
+}
+
+func (m *JsonMap) GetFloat64(key string) (float64, error) {
+	v, ok := m.dataMap[key]
+	if !ok {
+		return 0, models.ErrNilValue
+	}
+	floatVal, err := convert.ConvertFloat64(v)
+	if err != nil {
+		return 0, fmt.Errorf("GetFloat64 error, key: %s, value: %v, error: %w", key, v, err)
+	}
+	return floatVal, nil
+}
+
+func (m *JsonMap) MustGetFloat64(key string) float64 {
+	floatVal, err := m.GetFloat64(key)
+	if err != nil {
+		panic(fmt.Sprintf("MustGetFloat64 error, key: %s, error: %v", key, err))
+	}
+	return floatVal
+}
+
+func (m *JsonMap) GetIntOrDefault(key string, defaultValue int) int {
+	intVal, err := m.TryGetInt(key)
+	if err != nil {
+		return defaultValue
+	}
+	return intVal
+}
+
 func (m *JsonMap) SetInt(key string, value int) {
 	m.setValue(key, value)
 }
@@ -206,6 +254,49 @@ func (m *JsonMap) SetNullString(key string, value string) {
 }
 
 func (m *JsonMap) SetNullStringValue(key string, value sql.NullString) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetBoolean(key string, value bool) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetNullBoolean(key string, value bool) {
+	boolVal := sql.NullBool{Valid: true, Bool: value}
+	m.setValue(key, boolVal)
+}
+
+func (m *JsonMap) SetNullBooleanValue(key string, value sql.NullBool) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetFloat64(key string, value float64) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetNullFloat64(key string, value float64) {
+	floatVal := sql.NullFloat64{Valid: true, Float64: value}
+	m.setValue(key, floatVal)
+}
+
+func (m *JsonMap) SetNullFloat64Value(key string, value sql.NullFloat64) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetFloat32(key string, value float32) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetNullFloat32(key string, value float32) {
+	floatVal := sql.NullFloat64{Valid: true, Float64: float64(value)}
+	m.setValue(key, floatVal)
+}
+
+func (m *JsonMap) SetNullFloat32Value(key string, value sql.NullFloat64) {
+	m.setValue(key, value)
+}
+
+func (m *JsonMap) SetUuidString(key string, value string) {
 	m.setValue(key, value)
 }
 
