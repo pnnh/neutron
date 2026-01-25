@@ -100,6 +100,80 @@ func GetMimeType(filePath string) string {
 		return "text/plain"
 	case ".webp":
 		return "image/webp"
+	case ".awebp":
+		return "image/webp"
+	case ".heic", ".heif":
+		return "image/heic"
+	case ".avif":
+		return "image/avif"
+	case ".jsonc":
+		return "application/json"
+	case ".tsv":
+		return "text/tab-separated-values"
+	case ".csv":
+		return "text/csv"
+	case ".ics":
+		return "text/calendar"
+	case ".svgz":
+		return "image/svg+xml"
+	case ".log":
+		return "text/plain"
+	case ".rst":
+		return "text/plain"
+	case ".tex":
+		return "text/plain"
+	case ".lhs":
+		return "text/plain"
+	case ".clj", ".cljs", ".cljc", ".edn":
+		return "text/plain"
+	case ".fs", ".fsi", ".fsx":
+		return "text/plain"
+	case ".vb":
+		return "text/plain"
+	case ".vbs":
+		return "text/plain"
+	case ".ps1":
+		return "text/plain"
+	case ".psm1":
+		return "text/plain"
+	case ".sh":
+		return "text/plain"
+	case ".bash":
+		return "text/plain"
+	case ".zsh":
+		return "text/plain"
+	case ".fish":
+		return "text/plain"
+	case ".ksh":
+		return "text/plain"
+	case ".csh":
+		return "text/plain"
+	case ".tcsh":
+		return "text/plain"
+	case ".lua":
+		return "text/plain"
+	case ".r":
+		return "text/plain"
+	case ".jl":
+		return "text/plain"
+	case ".groovy":
+		return "text/plain"
+	case ".makefile":
+		return "text/plain"
+	case ".mk":
+		return "text/plain"
+	case ".cmake":
+		return "text/plain"
+	case ".dockerfile":
+		return "text/plain"
+	case ".conf":
+		return "text/plain"
+	case ".config":
+		return "text/plain"
+	case ".props":
+		return "text/plain"
+	case ".properties":
+		return "text/plain"
 	}
 	fileName := strings.ToLower(path.Base(filePath))
 	switch fileName {

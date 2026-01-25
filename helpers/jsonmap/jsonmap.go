@@ -2,8 +2,10 @@ package jsonmap
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/pnnh/neutron/helpers"
@@ -51,6 +53,24 @@ func NewJsonMap() *JsonMap {
 	return &JsonMap{
 		dataMap: make(map[string]interface{}),
 	}
+}
+
+func ParseJsonMap(jsonText string) (*JsonMap, error) {
+	metadataText := string(jsonText)
+	metadataMap := make(map[string]interface{})
+	err := json.Unmarshal([]byte(metadataText), &metadataMap)
+	if err != nil {
+		return nil, fmt.Errorf("解析JSON数据失败: %w", err)
+	}
+	return ConvertJsonMap(metadataMap), nil
+}
+
+func ParseJsonMapFromFile(fullPath string) (*JsonMap, error) {
+	fileData, err := os.ReadFile(fullPath)
+	if err != nil {
+		return nil, fmt.Errorf("ParseJsonMapFromFile read file error: %w", err)
+	}
+	return ParseJsonMap(string(fileData))
 }
 
 func ConvertJsonMap(dataMap map[string]interface{}) *JsonMap {
@@ -157,7 +177,7 @@ func (m *JsonMap) GetFloat64(key string) (float64, error) {
 	if !ok {
 		return 0, models.ErrNilValue
 	}
-	floatVal, err := convert.ConvertFloat64(v)
+	floatVal, err := convert.ToFloat64(v)
 	if err != nil {
 		return 0, fmt.Errorf("GetFloat64 error, key: %s, value: %v, error: %w", key, v, err)
 	}
