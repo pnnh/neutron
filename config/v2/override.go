@@ -2,9 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/pnnh/neutron/services/convert"
 
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
+	"github.com/pnnh/neutron/services/convert"
 )
 
 type OverrideConfigStore struct {
@@ -72,7 +72,7 @@ func (c OverrideConfigStore) GetBool(key string) (bool, error) {
 func (c OverrideConfigStore) MustGetString(key string) string {
 	value, err := c.GetString(key)
 	if err != nil {
-		logrus.Fatalf("配置项[%s]不存在: %v", key, err)
+		inlogger.Logger.Fatalf("配置项[%s]不存在: %v", key, err)
 	}
 	return value
 }

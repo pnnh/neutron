@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
 	minify "github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
 	"github.com/tdewolff/minify/v2/html"
@@ -77,7 +77,7 @@ func Minify(h http.Handler) http.Handler {
 			buffer := bytes.NewBuffer([]byte{})
 			if err := minifier.Minify(ct, buffer, mw.Body); err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				logrus.Println("压缩响应出错: %w", err)
+				inlogger.Logger.Println("压缩响应出错: %w", err)
 				return
 			}
 			hdr.Del("Content-Length")
@@ -85,13 +85,13 @@ func Minify(h http.Handler) http.Handler {
 
 			if _, err := w.Write(buffer.Bytes()); err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				logrus.Println("写入响应出错: %w", err)
+				inlogger.Logger.Println("写入响应出错: %w", err)
 				return
 			}
 		} else {
 			if _, err := w.Write(mw.Body.Bytes()); err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				logrus.Println("写入原始响应出错: %w", err)
+				inlogger.Logger.Println("写入原始响应出错: %w", err)
 				return
 			}
 		}

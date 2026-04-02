@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
-	"github.com/pnnh/neutron/services/filesystem"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
+	"github.com/pnnh/neutron/services/filesystem"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -53,7 +54,7 @@ func (c FileConfigStore) GetBool(key string) (bool, error) {
 func (c FileConfigStore) MustGetString(key string) string {
 	value, err := c.GetString(key)
 	if err != nil {
-		logrus.Fatalf("配置项[%s]不存在3", key)
+		inlogger.Logger.Fatalf("配置项[%s]不存在3", key)
 	}
 	return value
 }

@@ -12,7 +12,7 @@ import (
 var dialer *gomail.Dialer
 var limiter *rate.Limiter = &rate.Limiter{}
 
-func init() {
+func InitMail() {
 	mailHost := config.MustGetConfigurationString("MAIL_HOST")
 	mailPort := config.GetConfigOrDefaultInt64("MAIL_PORT", 587)
 	mailUser := config.MustGetConfigurationString("MAIL_USER")

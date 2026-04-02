@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/patrickmn/go-cache"
+	"github.com/pnnh/neutron/internal/inlogger"
 	"github.com/pnnh/neutron/models"
 	"github.com/pnnh/neutron/services/strutil"
-	"github.com/sirupsen/logrus"
 )
 
 type GalaxyConfigStore struct {
@@ -136,7 +136,7 @@ func (c GalaxyConfigStore) GetBool(key string) (bool, error) {
 func (c GalaxyConfigStore) MustGetString(key string) string {
 	value, err := c.GetString(key)
 	if err != nil {
-		logrus.Fatalf("配置项[%s]不存在2", key)
+		inlogger.Logger.Fatalf("配置项[%s]不存在2", key)
 	}
 	return value
 }

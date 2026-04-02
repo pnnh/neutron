@@ -6,7 +6,7 @@ import (
 	"hash/crc64"
 
 	"github.com/bwmarrin/snowflake"
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
 )
 
 var snowflakeNode *snowflake.Node
@@ -15,7 +15,7 @@ var crc64Table *crc64.Table
 func init() {
 	node, err := snowflake.NewNode(1)
 	if err != nil {
-		logrus.Fatalln("初始化snowflake出错", err)
+		inlogger.Logger.Fatalln("初始化snowflake出错", err)
 		return
 	}
 	snowflakeNode = node

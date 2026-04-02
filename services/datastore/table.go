@@ -7,11 +7,10 @@ import (
 	"time"
 
 	"github.com/pnnh/neutron/helpers"
+	"github.com/pnnh/neutron/internal/inlogger"
 	"github.com/pnnh/neutron/models"
 	"github.com/pnnh/neutron/services/convert"
 	"github.com/pnnh/neutron/services/datetime"
-
-	"github.com/sirupsen/logrus"
 )
 
 type IIntValue interface {
@@ -360,7 +359,7 @@ func (m *DataRow) SetNullTimeStringChainFrom(key string, getter StringGetter) *D
 	}
 	timeValue, err := time.Parse(time.RFC3339, value)
 	if err != nil {
-		logrus.Errorf("Parse time error, key: %s, value: %s, error: %v", key, value, err)
+		inlogger.Logger.Errorf("Parse time error, key: %s, value: %s, error: %v", key, value, err)
 	}
 	strVal := sql.NullTime{Valid: err == nil, Time: timeValue}
 	m.setValue(key, strVal)

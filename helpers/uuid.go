@@ -2,7 +2,7 @@ package helpers
 
 import (
 	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
 )
 
 func NewUuid() (string, error) {
@@ -16,7 +16,7 @@ func NewUuid() (string, error) {
 func MustUuid() string {
 	id, err := uuid.NewUUID()
 	if err != nil {
-		logrus.Fatalln("初始化uuid出错", err)
+		inlogger.Logger.Fatalln("初始化uuid出错", err)
 		return ""
 	}
 	return id.String()

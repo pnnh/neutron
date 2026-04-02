@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
 )
 
 type FilePorter struct {
@@ -16,7 +16,7 @@ func NewFilePorter(targetPath string) (*FilePorter, error) {
 
 	resolvedPath, err := ResolvePath(targetPath)
 	if err != nil {
-		logrus.Fatalln("NewFilePorter解析路径失败", err)
+		inlogger.Logger.Fatalln("NewFilePorter解析路径失败", err)
 		return nil, fmt.Errorf("NewFilePorter解析路径失败")
 	}
 	return &FilePorter{targetRootPath: resolvedPath}, nil

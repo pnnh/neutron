@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pnnh/neutron/internal/inlogger"
 	"github.com/pnnh/neutron/services/datastore"
 	"github.com/pnnh/neutron/services/strutil"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/patrickmn/go-cache"
-	"github.com/sirupsen/logrus"
 )
 
 type PgConfigStore struct {
@@ -38,7 +38,7 @@ func NewPgConfigStore(pgUrl string, project, app, env, svc string) (*PgConfigSto
 		env:     env,
 		svc:     svc,
 	}
-	logrus.Infof("配置数据库连接成功")
+	inlogger.Logger.Infof("配置数据库连接成功")
 	return pgStore, nil
 }
 
@@ -84,7 +84,7 @@ from galaxy.configuration c `
 	}
 	defer func() {
 		if closeErr := rows.Close(); closeErr != nil {
-			logrus.Warnf("rows.Close: %v", closeErr)
+			inlogger.Logger.Warnf("rows.Close: %v", closeErr)
 		}
 	}()
 	for rows.Next() {
@@ -129,7 +129,7 @@ func (c *PgConfigStore) GetBool(key string) (bool, error) {
 func (c *PgConfigStore) MustGetString(key string) string {
 	value, err := c.GetString(key)
 	if err != nil {
-		logrus.Fatalf("配置项[%s]不存在2", key)
+		inlogger.Logger.Fatalf("配置项[%s]不存在2", key)
 	}
 	return value
 }

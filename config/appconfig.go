@@ -4,22 +4,14 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	v2 "github.com/pnnh/neutron/config/v2"
-
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
 )
 
 var appConfigStore v2.IConfigStore
 
 func InitAppConfig(configUrl string, project, app, env, svc string) error {
-	logrus.SetReportCaller(false)
-	logrus.SetFormatter(&logrus.TextFormatter{
-		ForceColors:     false,
-		TimestampFormat: time.RFC3339,
-	})
-
 	urlList := strings.Split(configUrl, ",")
 	if len(urlList) > 2 {
 		return fmt.Errorf("invalid config url: %s", configUrl)
@@ -45,11 +37,6 @@ func InitAppConfig(configUrl string, project, app, env, svc string) error {
 		return fmt.Errorf("invalid config url: %s", configUrl)
 	}
 
-	if Debug() {
-		logrus.SetLevel(logrus.DebugLevel)
-	} else {
-		logrus.SetLevel(logrus.InfoLevel)
-	}
 	return nil
 }
 
@@ -108,7 +95,7 @@ func GetConfiguration(key interface{}) (interface{}, bool) {
 		if value, err := appConfigStore.GetValue(key); err == nil {
 			return value, true
 		} else {
-			logrus.Errorf("GetConfiguration key=%s error: %v", key, err)
+			inlogger.Logger.Errorf("GetConfiguration key=%s error: %v", key, err)
 		}
 	}
 	return nil, false
@@ -126,7 +113,7 @@ func GetConfigurationString(key interface{}) (string, bool) {
 func MustGetConfigurationString(key interface{}) string {
 	value, ok := GetConfigurationString(key)
 	if !ok {
-		logrus.Fatalf("MustGetConfigurationString GetConfigurationString not exists: %s", key)
+		inlogger.Logger.Fatalf("MustGetConfigurationString GetConfigurationString not exists: %s", key)
 	}
 	return value
 }

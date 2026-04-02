@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/sirupsen/logrus"
+	"github.com/pnnh/neutron/internal/inlogger"
 )
 
 type NECode int
@@ -37,12 +37,12 @@ func (c NECode) WithLocalData(lang string, data interface{}) *NECommonResult {
 }
 
 func (c NECode) WithError(err error) *NECommonResult {
-	logrus.Errorf("NECode.WithError [%d] %v", c, err)
+	inlogger.Logger.Errorf("NECode.WithError [%d] %v", c, err)
 	return NENewCommonResult(c, NECodeMessage(LangEn, c), nil)
 }
 
 func (c NECode) WithLocalError(lang string, err error, zhMsg, enMsg string) *NECommonResult {
-	logrus.Errorf("MCode.WithError [%d] %v", c, err)
+	inlogger.Logger.Errorf("MCode.WithError [%d] %v", c, err)
 	return c.WithLocalMessage(lang, zhMsg, enMsg)
 }
 

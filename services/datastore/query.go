@@ -3,10 +3,11 @@ package datastore
 import (
 	"database/sql"
 	"fmt"
-	"github.com/iancoleman/strcase"
-	"github.com/pnnh/neutron/services/strutil"
 	"reflect"
 	"strings"
+
+	"github.com/iancoleman/strcase"
+	"github.com/pnnh/neutron/services/strutil"
 )
 
 func IsValidTableName(tableName string) bool {
@@ -82,7 +83,7 @@ func ReflectColumns(s interface{}) (map[string]any, error) {
 		field := t.Field(i)
 		fieldValue := v.Field(i)
 
-		//logrus.Printf("成员名: %s, 类型: %s, 类型名称: %s, 值: %v\n",
+		//inlogger.Logger.Printf("成员名: %s, 类型: %s, 类型名称: %s, 值: %v\n",
 		//	field.Name,
 		//	field.Type.Kind(),      // 基本类型，如 string、int、struct 等
 		//	field.Type.Name(),      // 类型名称，如 int、string、自定义类型名

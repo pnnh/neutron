@@ -12,9 +12,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/pnnh/neutron/internal/inlogger"
+	"github.com/pnnh/neutron/nelogger"
 	"github.com/pnnh/neutron/services/datastore"
-
-	"github.com/sirupsen/logrus"
 )
 
 type ModelField struct {
@@ -26,12 +26,12 @@ type ModelField struct {
 
 func main() {
 
-	logrus.SetLevel(logrus.DebugLevel)
+	nelogger.NESetLevel(nelogger.DebugLevel)
 	a, err := os.Getwd()
-	logrus.Println("dir", a, err)
-	logrus.Println("args", os.Args)
+	inlogger.Logger.Println("dir", a, err)
+	inlogger.Logger.Println("args", os.Args)
 	goFile := os.Getenv("GOFILE")
-	logrus.Println("goFile", goFile)
+	inlogger.Logger.Println("goFile", goFile)
 
 	fullPath := ""
 	if goFile == "" {
@@ -39,10 +39,10 @@ func main() {
 	} else {
 		fullPath = a + "/" + goFile
 	}
-	logrus.Println("goFile", fullPath)
+	inlogger.Logger.Println("goFile", fullPath)
 
 	if fullPath == "" {
-		logrus.Fatalln("请指定文件路径")
+		inlogger.Logger.Fatalln("请指定文件路径")
 	}
 
 	data, err := os.ReadFile(fullPath)
@@ -67,11 +67,11 @@ import (
 	packageAndImport = fmt.Sprintf(packageAndImport, f.Name.Name)
 	sb.WriteString(packageAndImport)
 
-	logrus.Debugln("f name", f.Name.Name)
+	inlogger.Logger.Debugln("f name", f.Name.Name)
 
 	for _, node := range f.Decls {
 		nodeType := reflect.TypeOf(node)
-		logrus.Println("nodeType", nodeType.String())
+		inlogger.Logger.Println("nodeType", nodeType.String())
 		switch node.(type) {
 
 		case *ast.GenDecl:
@@ -79,19 +79,19 @@ import (
 
 			for _, spec := range genDecl.Specs {
 				specType := reflect.TypeOf(spec)
-				logrus.Debugln("specType", specType.String())
+				inlogger.Logger.Debugln("specType", specType.String())
 				switch spec.(type) {
 				case *ast.TypeSpec:
 					typeSpec := spec.(*ast.TypeSpec)
 
-					logrus.Printf("Struct: name=%s\n", typeSpec.Name.Name)
+					inlogger.Logger.Printf("Struct: name=%s\n", typeSpec.Name.Name)
 
 					switch typeSpec.Type.(type) {
 					case *ast.StructType:
-						logrus.Printf("Struct: doc=%s\n", genDecl.Doc.Text())
+						inlogger.Logger.Printf("Struct: doc=%s\n", genDecl.Doc.Text())
 						text, err := ParseAstStructType(genDecl, typeSpec, typeSpec.Type.(*ast.StructType))
 						if err != nil {
-							logrus.Fatalln("生成失败", err)
+							inlogger.Logger.Fatalln("生成失败", err)
 						}
 						sb.WriteString(text)
 					}
@@ -106,7 +106,7 @@ import (
 	os.Remove(genFilePath)
 	file, err := os.Create(genFilePath)
 	if err != nil {
-		logrus.Fatalln("生成失败2", err)
+		inlogger.Logger.Fatalln("生成失败2", err)
 	}
 	defer file.Close()
 
@@ -116,17 +116,17 @@ import (
 	//}
 
 	sourceText := sb.String()
-	logrus.Printf("sourceText======================\n%s\n======================\n", sourceText)
+	inlogger.Logger.Printf("sourceText======================\n%s\n======================\n", sourceText)
 	fmt.Fprintf(file, "%s", sourceText)
 	formatted, err := format.Source([]byte(sourceText))
 	if err != nil {
-		logrus.Fatalln("生成失败4", err)
+		inlogger.Logger.Fatalln("生成失败4", err)
 	}
 	formattedSource := string(formatted)
 	file.Seek(0, 0)
 
 	fmt.Fprintf(file, "%s", formattedSource)
-	//logrus.Printf("formattedSource======================\n%s\n======================\n", formattedSource)
+	//inlogger.Logger.Printf("formattedSource======================\n%s\n======================\n", formattedSource)
 }
 
 func findTableName(src string) string {
@@ -134,7 +134,7 @@ func findTableName(src string) string {
 	matchArr := compileRegex.FindStringSubmatch(src)
 
 	if len(matchArr) > 0 {
-		logrus.Println("提取字符串内容：", matchArr[len(matchArr)-1])
+		inlogger.Logger.Println("提取字符串内容：", matchArr[len(matchArr)-1])
 	}
 
 	if len(matchArr) > 0 {
@@ -159,7 +159,7 @@ func ParseAstStructType(genDecl *ast.GenDecl, typeSpec *ast.TypeSpec, structType
 	if tableName == "" {
 		tableName = strings.ToLower(typeSpec.Name.Name)
 	}
-	logrus.Debugln("tableName", tableName)
+	inlogger.Logger.Debugln("tableName", tableName)
 
 	name := typeSpec.Name.Name
 	if strings.HasSuffix(name, "Model") {
@@ -177,7 +177,7 @@ func ParseAstStructType(genDecl *ast.GenDecl, typeSpec *ast.TypeSpec, structType
 
 		for _, name := range field.Names {
 			dbTag := reflect.StructTag(field.Tag.Value).Get("db")
-			//logrus.Printf("\tField: name=%s type=%s tag=%s\n", name.Name, fieldType, tagValue)
+			//inlogger.Logger.Printf("\tField: name=%s type=%s tag=%s\n", name.Name, fieldType, tagValue)
 			if dbTag == "" {
 				dbTag = strings.ToLower(name.Name)
 			}

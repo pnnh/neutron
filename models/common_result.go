@@ -1,6 +1,6 @@
 package models
 
-import "github.com/sirupsen/logrus"
+import "github.com/pnnh/neutron/internal/inlogger"
 
 type NECommonResult struct {
 	Code    NECode      `json:"code"`
@@ -11,7 +11,7 @@ type NECommonResult struct {
 func NENewCommonResult(code NECode, message string, data interface{}) *NECommonResult {
 	return &NECommonResult{Code: code, Message: message, Data: data}
 }
- 
+
 type NESelectResponse struct {
 	Page  int   `json:"page"`
 	Size  int   `json:"size"`
@@ -82,7 +82,7 @@ func NEErrorResultMessage(err error, message string) *NECommonResult {
 
 // 错误时响应，附带额外数据
 func NEErrorResultFull(err error, bizCode NECode, message string, data any) *NECommonResult {
-	logrus.Errorf("MCode.WithError [%d] %v", bizCode, err)
+	inlogger.Logger.Errorf("MCode.WithError [%d] %v", bizCode, err)
 	if message == "" {
 		message = NECodeMessage(LangZh, bizCode)
 	}
