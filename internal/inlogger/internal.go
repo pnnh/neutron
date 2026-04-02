@@ -16,12 +16,18 @@ func init() {
 	Logger.SetOutput(io.Discard)
 	Logger.SetLevel(logrus.PanicLevel)
 	Logger.SetReportCaller(false)
-	Logger.SetFormatter(&logrus.TextFormatter{
-		DisableColors:   false,
-		FullTimestamp:   true,
-		TimestampFormat: "2006-01-02 15:04:05",
+	defaultFormatter := BuildFormatter()
+	Logger.SetFormatter(defaultFormatter)
+}
+
+func BuildFormatter() *logrus.TextFormatter {
+	return &logrus.TextFormatter{
+		DisableColors:    false,
+		DisableTimestamp: true,
+		FullTimestamp:    true,
+		TimestampFormat:  "2006-01-02 15:04:05",
 		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
 			return filepath.Base(f.Function), filepath.Base(f.File) + ":" + strconv.Itoa(f.Line)
 		},
-	})
+	}
 }

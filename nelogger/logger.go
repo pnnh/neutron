@@ -1,6 +1,9 @@
 package nelogger
 
 import (
+	"io"
+	"os"
+
 	"github.com/pnnh/neutron/internal/inlogger"
 
 	"github.com/sirupsen/logrus"
@@ -17,6 +20,35 @@ const (
 	DebugLevel
 	TraceLevel
 )
+
+type NELogFormat uint32
+
+const (
+	ShortFormat NELogFormat = iota
+	FullFormat
+)
+
+// NEEnableLogger 启用neutron库中的日志输出功能，需要同时指定一个日志级别，和日志格式
+func NEEnableLogger(enable bool, level NELogLevel, format NELogFormat) {
+	if enable {
+		inlogger.Logger.SetOutput(os.Stdout)
+		NESetLevel(level)
+		SetFormat(format)
+	} else {
+		inlogger.Logger.SetOutput(io.Discard)
+	}
+}
+
+// SetFormat 设置日志格式，目前支持长短两种格式
+func SetFormat(format NELogFormat) {
+	formatter := inlogger.BuildFormatter()
+	if format == ShortFormat {
+		formatter.DisableTimestamp = true
+	} else {
+		formatter.DisableTimestamp = false
+	}
+	inlogger.Logger.SetFormatter(formatter)
+}
 
 // NESetLevel 设置neutron库内部日志的输出级别
 func NESetLevel(level NELogLevel) {
